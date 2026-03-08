@@ -20,23 +20,78 @@ const settingsTabs = [
   { id: 'educators', label: 'Eğitimci Yönetimi', icon: <UserCircle size={15} /> },
 ];
 
+const ROLE_KEY = 'user_role';
+
 function LeftSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const isFillRoute = location.pathname.startsWith('/s/');
   const isSettingsRoute = location.pathname === '/settings';
   const [settingsOpen, setSettingsOpen] = useState(isSettingsRoute);
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem(ROLE_KEY) === 'admin');
 
   if (isFillRoute) return null;
 
   const activeTab = new URLSearchParams(location.search).get('tab') || 'profile';
 
+  const toggleAdmin = () => {
+    const next = !isAdmin;
+    setIsAdmin(next);
+    localStorage.setItem(ROLE_KEY, next ? 'admin' : 'user');
+  };
+
   return (
     <aside className="left-sidebar glass-panel">
-      <div className="sidebar-header">
-        <img src="/logo.png" alt="ZA Logo" className="logo" />
-        <h2>Anket Yönetimi</h2>
+      <div className="sidebar-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <img src="/logo.png" alt="ZA Logo" className="logo" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', lineHeight: 1 }}>
+              Kurum ve Eğitim Planlama
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+              <h2 style={{ fontSize: '0.9rem', margin: 0, color: '#6366f1', fontWeight: 700 }}>Yönetimi</h2>
+              {isAdmin && (
+                <span style={{
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  color: '#7c3aed',
+                  background: 'rgba(124,58,237,0.1)',
+                  border: '1px solid rgba(124,58,237,0.25)',
+                  borderRadius: '6px',
+                  padding: '0.15rem 0.5rem',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
+                }}>
+                  Anket Yönetimi
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Admin toggle - subtle, at bottom of header */}
+        <button
+          onClick={toggleAdmin}
+          title={isAdmin ? 'Admin modundan çık' : 'Admin moduna geç'}
+          style={{
+            fontSize: '0.65rem',
+            color: isAdmin ? '#7c3aed' : '#94a3b8',
+            background: isAdmin ? 'rgba(124,58,237,0.08)' : 'transparent',
+            border: `1px solid ${isAdmin ? 'rgba(124,58,237,0.2)' : 'transparent'}`,
+            borderRadius: '4px',
+            padding: '0.15rem 0.5rem',
+            cursor: 'pointer',
+            fontWeight: 600,
+            letterSpacing: '0.03em',
+            alignSelf: 'flex-start',
+            transition: 'all 0.2s',
+          }}
+        >
+          {isAdmin ? '👑 Sistem Yöneticisi' : '👤 Kullanıcı'}
+        </button>
       </div>
+
       <nav className="sidebar-nav">
         <Link to="/" className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}>
           <LayoutDashboard size={24} strokeWidth={1.5} /> Kokpit
