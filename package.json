@@ -1,0 +1,12 @@
+{
+  "name": "survey-system",
+  "version": "1.0.0",
+  "description": "Anket Yönetim ve Raporlama Sistemi",
+  "scripts": {
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
